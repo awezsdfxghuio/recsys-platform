@@ -11,9 +11,7 @@ from surprise.model_selection import train_test_split
 st.set_page_config(page_title="Data Platform & RecSys", layout="wide")
 st.title("Платформа хранения, обработки данных и рекомендательных систем")
 
-# --------------------------------------------------
 # Вспомогательные функции
-# --------------------------------------------------
 @st.cache_data
 def load_raw_data():
     ratings = pd.read_csv("data/ratings.csv")
@@ -72,18 +70,15 @@ def get_cluster_topology():
 
 ratings_df, movies_df = load_raw_data()
 
-# --------------------------------------------------
 # Вкладки проекта
-# --------------------------------------------------
 tab_storage, tab_etl, tab_ml = st.tabs([
     "1. Распределенные СХД (SeaweedFS)", 
     "2. Обработка данных и ETL", 
     "3. Рекомендательная система (SVD)"
 ])
 
-# --------------------------------------------------
+
 # 1. РАСПРЕДЕЛЕННЫЕ СИСТЕМЫ ХРАНЕНИЯ ДАННЫХ
-# --------------------------------------------------
 with tab_storage:
     st.header("1. Распределенные системы хранения данных (Кластер SeaweedFS)")
     st.markdown("""
@@ -183,9 +178,7 @@ with tab_storage:
     st.write(f"Общее количество зарегистрированных событий: {len(ratings_df):,} строк")
     st.dataframe(ratings_df.head(5), use_container_width=True)
 
-# --------------------------------------------------
 # 2. ТЕХНОЛОГИЯ ХРАНЕНИЯ И ОБРАБОТКИ ДАННЫХ (ETL)
-# --------------------------------------------------
 with tab_etl:
     st.header("2. Технология хранения и обработки данных (ETL)")
     st.markdown("Пайплайн пакетной обработки данных: нормализация типов, объединение сущностей и формирование аналитической витрины (Data Mart).")
@@ -229,9 +222,7 @@ with tab_etl:
     st.subheader("Сформированная витрина данных (Data Mart)")
     st.dataframe(popular_movies.head(8), use_container_width=True)
 
-# --------------------------------------------------
 # 3. ПРИКЛАДНЫЕ ЗАДАЧИ АНАЛИЗА ДАННЫХ (RECSYS)
-# --------------------------------------------------
 with tab_ml:
     st.header("3. Прикладные задачи анализа данных: Рекомендательные системы")
     st.markdown("Матричная факторизация (SVD) на базе коллаборативной фильтрации против базового бейзлайна смещений.")
@@ -242,7 +233,7 @@ with tab_ml:
         data = Dataset.load_from_df(ratings[['userId', 'movieId', 'rating']], reader)
         trainset, testset = train_test_split(data, test_size=0.2, random_state=42)
         
-        # Baseline (алгоритм Белла-Корена с bias юзера и фильма)
+        # Baseline
         base = BaselineOnly()
         base.fit(trainset)
         preds_base = base.test(testset)
